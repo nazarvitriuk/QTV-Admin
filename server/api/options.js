@@ -19,6 +19,10 @@ const OptionsSchema = new mongoose.Schema({
 const Options = mongoose.model('Options', OptionsSchema);
 
 export default defineEventHandler(async (event) => {
+  setHeader(event, 'Access-Control-Allow-Origin', '*');
+  setHeader(event, 'Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  setHeader(event, 'Access-Control-Allow-Headers', 'Content-Type');
+
   const mongooseConnect = await mongoose.connect(MONGO_URI, {});
   let data = null;
 
