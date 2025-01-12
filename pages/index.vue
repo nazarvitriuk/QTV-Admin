@@ -185,7 +185,7 @@ onMounted(async () => {
       </div>
 
       <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <AppToast id="liveToast" text="Options has been saved successfully." />
+        <AppToast id="liveToast" text="Options has been saved successfully!" />
       </div>
 
       <AppModal id="addUserModal">
