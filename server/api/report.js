@@ -4,5 +4,6 @@ export default defineEventHandler(async (event) => {
   setHeader(event, 'Access-Control-Allow-Headers', 'Content-Type');
 
   const reqBody = await readBody(event);
-  console.log(reqBody);
+
+  return reqBody;
 });
