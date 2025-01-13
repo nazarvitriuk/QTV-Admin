@@ -2,6 +2,7 @@
 import axios from "axios";
 import AppToast from "~/components/AppToast.vue";
 import AppModal from "~/components/AppModal.vue";
+import {useMainStore} from "~/stores/main.js";
 
 class User {
   constructor(id, username, avatar, color) {
@@ -11,6 +12,9 @@ class User {
     this.color = color;
   }
 }
+
+const mainStore = useMainStore();
+const { queue } = storeToRefs(mainStore)
 
 const users = ref([]);
 const userEditID = ref('');
@@ -134,12 +138,9 @@ onMounted(async () => {
       <div class="col-12">
         <div class="admin-section">
           <p>Current order:</p>
+          {{ queue }}
           <ul class="list-group">
             <li class="list-group-item">An item</li>
-            <li class="list-group-item">A second item</li>
-            <li class="list-group-item">A third item</li>
-            <li class="list-group-item">A fourth item</li>
-            <li class="list-group-item">And a fifth one</li>
           </ul>
         </div>
       </div>
