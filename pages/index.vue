@@ -5,11 +5,12 @@ import AppModal from "~/components/AppModal.vue";
 import {useMainStore} from "~/stores/main.js";
 
 class User {
-  constructor(id, username, avatar, color) {
+  constructor(id, username, avatar, color, nickname) {
     this.id = id;
     this.username = username;
     this.avatar = avatar;
     this.color = color;
+    this.nickname = nickname;
   }
 }
 
@@ -21,6 +22,7 @@ const userEditID = ref('');
 const username = ref('');
 const avatar = ref('');
 const color = ref('#FFFFFF');
+const nickname = ref('');
 const chatEnabled = ref(false);
 const stringEnabled = ref(false);
 const modal = ref(null);
@@ -57,6 +59,7 @@ function onUserEdit(user) {
   username.value = user.username;
   avatar.value = user.avatar;
   color.value = user.color;
+  nickname.value = user.nickname;
 
   modal.value.show();
 }
@@ -65,14 +68,17 @@ function submit() {
   if (userEditID.value) {
     const editedUserIndex = users.value.findIndex(user => user.id === userEditID.value);
 
+    console.log(nickname.value)
+
     users.value[editedUserIndex] = {
       username: username.value,
       avatar: avatar.value,
       color: color.value,
-      id: userEditID.value
+      id: userEditID.value,
+      nickname: nickname.value,
     }
   } else {
-    users.value = [ ...users.value, new User(generateID(), username.value, avatar.value, color.value) ];
+    users.value = [ ...users.value, new User(generateID(), username.value, avatar.value, color.value, nickname.value) ];
   }
 
   closeModal();
@@ -100,12 +106,9 @@ onMounted(async () => {
   const options = await axios.get('/api/options');
 
   optionsLoaded.value = true;
-  username.value = options.data.username;
-  avatar.value = options.data.avatar;
-  color.value = options.data.color;
-  chatEnabled.value = options.data.chatEnabled;
-  stringEnabled.value = options.data.stringEnabled;
-  users.value = options.data.users;
+  chatEnabled.value = options.data.chatEnabled || true;
+  stringEnabled.value = options.data.stringEnabled || true;
+  users.value = options.data.users || [];
 })
 
 </script>
@@ -132,16 +135,6 @@ onMounted(async () => {
             <input v-model="stringEnabled" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
             <label class="form-check-label" for="flexSwitchCheckDefault">Running string enabled</label>
           </div>
-        </div>
-      </div>
-
-      <div class="col-12">
-        <div class="admin-section">
-          <p>Current order:</p>
-          {{ queue }}
-          <ul class="list-group">
-            <li class="list-group-item">An item</li>
-          </ul>
         </div>
       </div>
 
@@ -198,12 +191,21 @@ onMounted(async () => {
           <div class="modal-body flex flex-column flex-gap-3">
             <div class="mb-3">
               <label for="username" class="form-label">Twitch username</label>
-              <input v-model="username" type="text" class="form-control" id="username" placeholder="Enter username" required>
+              <input v-model="username" type="text" class="form-control" placeholder="Enter username" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="username" class="form-label">Chat nickname</label>
+              <input v-model="nickname" type="text" class="form-control" placeholder="Enter nickname" required>
             </div>
 
             <div class="mb-3">
               <label for="username" class="form-label">Avatar URL</label>
               <input v-model="avatar" type="text" class="form-control" id="avatar" placeholder="Enter avatar URL">
+            </div>
+
+            <div class="avatar-preview mb-3" v-if="avatar">
+              <img  :src="avatar" alt="" />
             </div>
 
             <div class="mb-3">
@@ -212,7 +214,6 @@ onMounted(async () => {
                   v-model="color"
                   type="color"
                   class="form-control form-control-color w-100"
-                  id="exampleColorInput"
                   title="Choose your color"
               >
             </div>
@@ -232,6 +233,16 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+  .avatar-preview {
+    background-color: silver;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
+    & > img {
+      height: 120px;
+    }
+  }
 </style>

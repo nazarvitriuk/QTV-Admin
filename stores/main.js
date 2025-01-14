@@ -8,6 +8,8 @@ export const useMainStore = defineStore('main', {
   },
   actions: {
     setQueue(data) {
+      console.log(data)
+
       this.queue = data;
     }
   },
